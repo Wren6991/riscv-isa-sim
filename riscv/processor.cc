@@ -529,7 +529,9 @@ void processor_t::take_trap(trap_t& t, reg_t epc)
     state.pc = !nmie ? rnmi_trap_handler_address : trap_handler_address;
     state.mepc->write(epc);
     state.mcause->write(supv_double_trap ? CAUSE_DOUBLE_TRAP : t.cause());
-    state.mtval->write(t.get_tval());
+    // Hazard3: return mtval=0 for all trap causes
+    // state.mtval->write(t.get_tval());
+    state.mtval->write(0);
     state.mtval2->write(supv_double_trap ? t.cause() : t.get_tval2());
     state.mtinst->write(t.get_tinst());
 
